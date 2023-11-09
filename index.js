@@ -4,12 +4,18 @@ import mongoose from 'mongoose';
 
 const app = express();
 
-mongoose.connect("mongodb://localhost:27017",{
+mongoose.connect("mongodb://127.0.0.1:27017",{
     dbName: "backend",
 })
 .then(() => console.log("Database Connected"))
 .catch((e)=>console.log(e));
 
+ const messageSchema = new mongoose.Schema({
+    name: String,
+    email: String,
+ });
+
+const Message = mongoose.model("Message",messageSchema);
 
 const users = [];
 
@@ -23,23 +29,15 @@ app.get("/",(req, res) =>{
     res.render("index");
 });
 
-app.get("/add",(req, res) =>{
-    res.render("index");
-});
-
 app.get("/success", (req,res) =>{
     res.render("success");
 });
 
-app.get("/users", (req,res) =>{
-    res.json({
-        users,
-    });
-});
 
-app.post("/contact", (req,res) => {
+app.post("/contact", async(req,res) => {
    
-    users.push({username: req.body.name, email: req.body.email });
+    const messageData = {username: req.body.name, email: req.body.email };
+    await Message.create(messageData);
     res.redirect("/success");
 });
 
