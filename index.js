@@ -17,8 +17,6 @@ mongoose.connect("mongodb://127.0.0.1:27017",{
 
 const Message = mongoose.model("Message",messageSchema);
 
-const users = [];
-
 app.set("view engine","ejs");
 
 app.use(express.static(path.join(path.resolve(), "public")));
@@ -35,15 +33,10 @@ app.get("/success", (req,res) =>{
 
 
 app.post("/contact", async(req,res) => {
-   
-    const messageData = {username: req.body.name, email: req.body.email };
-    await Message.create(messageData);
+    const {name, email} = req.body;
+    await Message.create({name, email});
     res.redirect("/success");
 });
-
-
-
-
 
 app.listen(5000, () => {
     console.log("Server is working");
